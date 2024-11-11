@@ -185,7 +185,7 @@ $SUDO install -m 755 "$BUILDROOT/start_wayfire.sh" "$PREFIX/bin/startwayfire"
 
 ask_confirmation "Do you want to install wayfire-plugins-extra? [y/n]? "
 if [ "$yn" = Y ]; then
-    check_download wayfire-plugins-extra
+    check_download2 wayfire-plugins-extra
     cd "$BUILDROOT/wayfire-plugins-extra"
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${PREFIX}/${DEST_LIBDIR}/pkgconfig" meson setup build --prefix="${PREFIX}" $BUILDPARAMS
     ninja -C build
@@ -194,7 +194,7 @@ fi
 
 ask_confirmation "Do you want to install WCM, a graphical configuration tool for Wayfire [y/n]? "
 if [ "$yn" = Y ]; then
-    check_download wcm
+    check_download2 wcm
     cd "$BUILDROOT/wcm"
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${PREFIX}/${DEST_LIBDIR}/pkgconfig" meson setup build --prefix="${PREFIX}" $BUILDPARAMS
     ninja -C build
