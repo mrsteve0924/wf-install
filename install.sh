@@ -108,6 +108,18 @@ check_download() {
     cd "$BUILDROOT"
     if [ ! -d "$1" ] || [ "$CLEANBUILD" = 1 ]; then
         rm -rf "$1"
+        git clone "https://github.com/mrsteve0924/$1"
+    fi
+
+    # Checkout the correct stream
+    cd "$1"
+    git checkout "origin/${STREAM}"
+}
+
+check_download2() {
+    cd "$BUILDROOT"
+    if [ ! -d "$1" ] || [ "$CLEANBUILD" = 1 ]; then
+        rm -rf "$1"
         git clone "https://github.com/WayfireWM/$1"
     fi
 
@@ -117,7 +129,7 @@ check_download() {
 }
 
 check_download wayfire
-check_download wf-shell
+check_download2 wf-shell
 
 cd "$BUILDROOT/wayfire"
 
