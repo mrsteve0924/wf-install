@@ -51,7 +51,7 @@ while true; do
             PREFIX="$1"
             ;;
     	-d|--debug)
-	    BUILDPARAMS="-Dbuildtype=debug -Db_sanitize=address,undefined"
+	    BUILDPARAMS="-Dbuildtype=debug" #removed -Db_sanitize=address,undefined
 	    ;;
 	-o|--optimize)
 	    BUILDPARAMS="-Dbuildtype=release -Db_lto=true"
@@ -108,6 +108,18 @@ check_download() {
     cd "$BUILDROOT"
     if [ ! -d "$1" ] || [ "$CLEANBUILD" = 1 ]; then
         rm -rf "$1"
+        git clone "https://github.com/mrsteve0924/$1"
+    fi
+
+    # Checkout the correct stream
+    cd "$1"
+    git checkout "origin/${STREAM}"
+}
+
+check_download2() {
+    cd "$BUILDROOT"
+    if [ ! -d "$1" ] || [ "$CLEANBUILD" = 1 ]; then
+        rm -rf "$1"
         git clone "https://github.com/WayfireWM/$1"
     fi
 
@@ -117,7 +129,7 @@ check_download() {
 }
 
 check_download wayfire
-check_download wf-shell
+check_download2 wf-shell
 
 cd "$BUILDROOT/wayfire"
 
@@ -173,7 +185,7 @@ $SUDO install -m 755 "$BUILDROOT/start_wayfire.sh" "$PREFIX/bin/startwayfire"
 
 ask_confirmation "Do you want to install wayfire-plugins-extra? [y/n]? "
 if [ "$yn" = Y ]; then
-    check_download wayfire-plugins-extra
+    check_download2 wayfire-plugins-extra
     cd "$BUILDROOT/wayfire-plugins-extra"
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${PREFIX}/${DEST_LIBDIR}/pkgconfig" meson setup build --prefix="${PREFIX}" $BUILDPARAMS
     ninja -C build
@@ -182,7 +194,7 @@ fi
 
 ask_confirmation "Do you want to install WCM, a graphical configuration tool for Wayfire [y/n]? "
 if [ "$yn" = Y ]; then
-    check_download wcm
+    check_download2 wcm
     cd "$BUILDROOT/wcm"
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${PREFIX}/${DEST_LIBDIR}/pkgconfig" meson setup build --prefix="${PREFIX}" $BUILDPARAMS
     ninja -C build
